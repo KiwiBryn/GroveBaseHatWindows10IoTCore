@@ -43,8 +43,8 @@ namespace devMobile.Windows10IoTCore.I2CDevicePinger
 			}
 
 			// Address to be checked
-			//I2cConnectionSettings settings = new I2cConnectionSettings(0x04) // PI Grove base hat
-			I2cConnectionSettings settings = new I2cConnectionSettings(0x53) // ADXL345
+			I2cConnectionSettings settings = new I2cConnectionSettings(0x04) // PI Grove base hat
+			//I2cConnectionSettings settings = new I2cConnectionSettings(0x53) // ADXL345
 			{
 				BusSpeed = I2cBusSpeed.StandardMode,
 			   SharingMode = I2cSharingMode.Shared,
