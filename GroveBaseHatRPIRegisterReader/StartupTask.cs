@@ -63,17 +63,22 @@ namespace devMobile.Windows10IoTCore.GroveBaseHatRPIRegisterReader
 					// 0x30 ~ 0x37: input voltage / output voltage						
 					do
 					{
-						byte[] writeBuffer = new byte[1] { 0x10 };
-						byte[] readBuffer = new byte[2] { 0, 0 };
+						for (byte register = 0; register < 0x10; register++)
+						{
+							byte[] writeBuffer = new byte[1] { register };
+							byte[] readBuffer1 = new byte[1] { 0 };
+							byte[] readBuffer2 = new byte[2] { 0,0 };
 
-						device.WriteRead(writeBuffer, readBuffer);
-						value = BitConverter.ToUInt16(readBuffer, 0);
-							
-						Debug.WriteLine($"Value {value}");
+							device.WriteRead(writeBuffer, readBuffer1);
+							device.WriteRead(writeBuffer, readBuffer2);
+							value = BitConverter.ToUInt16(readBuffer2, 0);
 
-						Task.Delay(1000).GetAwaiter().GetResult();
+							Debug.Write($"{register},{readBuffer1[0]},{value} ");
+							Task.Delay(1000).GetAwaiter().GetResult();
+						}
+						Debug.WriteLine("");
 					}
-					while (value != 0);
+					while (true);
 				}
 				catch (Exception ex)
 				{
