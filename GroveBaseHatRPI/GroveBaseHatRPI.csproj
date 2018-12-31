@@ -7,7 +7,7 @@
     <ProjectGuid>{B4C777F4-C04E-4A0A-8F94-BBBC540822FC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GroveBaseHatRPI</RootNamespace>
+    <RootNamespace>devMobile.Windows10IoTCore.GroveBaseHatRPI</RootNamespace>
     <AssemblyName>GroveBaseHatRPI</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>

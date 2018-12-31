@@ -7,7 +7,7 @@
     <ProjectGuid>{7EA53676-EDDC-4BFA-B3A3-755F4B201F72}</ProjectGuid>
     <OutputType>winmdobj</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GroveBaseHatRPIClient</RootNamespace>
+    <RootNamespace>devMobile.Windows10IoTCore.GroveBaseHatRPIClient</RootNamespace>
     <AssemblyName>GroveBaseHatRPIClient</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
@@ -132,6 +132,12 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.3</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GroveBaseHatRPI\GroveBaseHatRPI.csproj">
+      <Project>{b4c777f4-c04e-4a0a-8f94-bbbc540822fc}</Project>
+      <Name>GroveBaseHatRPI</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '15.0' ">
     <VisualStudioVersion>15.0</VisualStudioVersion>
