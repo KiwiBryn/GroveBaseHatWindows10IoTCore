@@ -48,7 +48,7 @@ namespace devMobile.Windows10IoTCore.GroveBaseHatRPIClient
 			double powerSupplyVoltage = analogPorts.PowerSupplyVoltage();
 			Debug.WriteLine($"Power supply voltage {powerSupplyVoltage}v");
 
-			timer = ThreadPoolTimer.CreatePeriodicTimer(AnalogPortsRaw, TimeSpan.FromSeconds(5));
+			//timer = ThreadPoolTimer.CreatePeriodicTimer(AnalogPortsRaw, TimeSpan.FromSeconds(5));
 			//timer = ThreadPoolTimer.CreatePeriodicTimer(AnalogPortsVoltage, TimeSpan.FromSeconds(5));
 			//timer = ThreadPoolTimer.CreatePeriodicTimer(AnalogPortsRead, TimeSpan.FromSeconds(5));
 		}

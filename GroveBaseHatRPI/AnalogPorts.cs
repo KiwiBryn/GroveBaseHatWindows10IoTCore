@@ -33,9 +33,9 @@ namespace devMobile.Windows10IoTCore.GroveBaseHatRPI
 		private const byte RegisterDeviceId = 0x0;
 		private const byte RegisterVersion = 0x02;
 		private const byte RegisterPowerSupplyVoltage = 0x29;
-		private const byte RegisterRawOffset = 0x10;
-		private const byte RegisterVoltageOffset = 0x20;
-		private const byte RegisterValueOffset = 0x30;
+		private const byte RegisterRawBase = 0x10;
+		private const byte RegisterVoltageBase = 0x20;
+		private const byte RegisterValueBase = 0x30;
 		private const byte DeviceId = 0x0004;
 		private I2cDevice Device= null;
 		private bool Disposed = false;
@@ -52,19 +52,6 @@ namespace devMobile.Windows10IoTCore.GroveBaseHatRPI
 			A7 = 7,
 			A8 = 8
 		};
-
-		public AnalogPorts()
-		{
-		}
-
-
-		public AnalogPorts(I2cDevice device)
-		{
-			if (device== null)
-			{
-				throw new ArgumentNullException("device");
-			}
-		}
 
 		public void Dispose()
 		{
@@ -94,33 +81,31 @@ namespace devMobile.Windows10IoTCore.GroveBaseHatRPI
 			Dispose(false);
 		}
 
-		public void Initialise()
+		public void Initialise(I2cBusSpeed i2CBusSpeed = I2cBusSpeed.StandardMode, I2cSharingMode i2CSharingMode = I2cSharingMode.Shared)
 		{
-			if (Device == null)
+			string aqs = I2cDevice.GetDeviceSelector();
+
+			DeviceInformationCollection I2CBusControllers = DeviceInformation.FindAllAsync(aqs).AsTask().Result;
+			if (I2CBusControllers.Count != 1)
 			{
-				string aqs = I2cDevice.GetDeviceSelector();
-
-				DeviceInformationCollection I2CBusControllers = DeviceInformation.FindAllAsync(aqs).AsTask().Result;
-				if (I2CBusControllers.Count != 1)
-				{
-					throw new IndexOutOfRangeException("I2CBusControllers");
-				}
-
-				I2cConnectionSettings settings = new I2cConnectionSettings(I2CAddress)
-				{
-					BusSpeed = I2cBusSpeed.StandardMode,
-					SharingMode = I2cSharingMode.Shared,
-				};
-
-				Device = I2cDevice.FromIdAsync(I2CBusControllers[0].Id, settings).AsTask().Result;
+				throw new IndexOutOfRangeException("I2CBusControllers");
 			}
+
+			I2cConnectionSettings settings = new I2cConnectionSettings(I2CAddress)
+			{
+				BusSpeed = i2CBusSpeed,
+				SharingMode = i2CSharingMode,
+			};
+
+			Device = I2cDevice.FromIdAsync(I2CBusControllers[0].Id, settings).AsTask().Result;
 
 			byte[] writeBuffer = new byte[1] { RegisterDeviceId };
 			byte[] readBuffer = new byte[1] { 0 };
 
 			Device.WriteRead(writeBuffer, readBuffer);
-
-			if (readBuffer[0] != DeviceId)
+			byte deviceId = readBuffer[0];
+			Debug.WriteLine($"GroveBaseHatRPI DeviceId 0x{deviceId:X}");
+			if (deviceId != DeviceId)
 			{
 				throw new Exception("GroveBaseHatRPI not found");
 			}
@@ -135,7 +120,7 @@ namespace devMobile.Windows10IoTCore.GroveBaseHatRPI
 			Device.WriteRead(writeBuffer, readBuffer);
 			byte version = readBuffer[0];
 
-			Debug.WriteLine($"GroveBaseHatRPI version {version}");
+			Debug.WriteLine($"GroveBaseHatRPI version 0x{version:X}");
 
 			return version;
 		}
@@ -143,13 +128,13 @@ namespace devMobile.Windows10IoTCore.GroveBaseHatRPI
 		public double PowerSupplyVoltage()
 		{
 			byte[] writeBuffer = new byte[1] { RegisterPowerSupplyVoltage };
-			byte[] readBuffer2 = new byte[2] { 0, 0 };
+			byte[] readBuffer = new byte[2] { 0, 0 };
 			Debug.Assert(Device != null, "Initialise method not called");
 
-			Device.WriteRead(writeBuffer, readBuffer2);
-			ushort value = BitConverter.ToUInt16(readBuffer2, 0);
+			Device.WriteRead(writeBuffer, readBuffer);
+			ushort value = BitConverter.ToUInt16(readBuffer, 0);
 
-			Debug.WriteLine($"GroveBaseHatRPI PowerSupplyVoltage {value}");
+			Debug.WriteLine($"GroveBaseHatRPI PowerSupplyVoltage MSB 0x{readBuffer[1]:X} LSB 0x{readBuffer[0]:X} Value {value}");
 
 			return value / 1000.0 ;
 		}
@@ -157,15 +142,15 @@ namespace devMobile.Windows10IoTCore.GroveBaseHatRPI
 		public ushort ReadRaw(AnalogPort analogPort)
 		{
 			byte register = (byte)analogPort;
-			register += RegisterRawOffset;
+			register += RegisterRawBase;
 			byte[] writeBuffer = new byte[1] { register };
-			byte[] readBuffer2 = new byte[2] { 0, 0 };
+			byte[] readBuffer = new byte[2] { 0, 0 };
 			Debug.Assert(Device != null, "Initialise method not called");
 
-			Device.WriteRead(writeBuffer, readBuffer2);
-			ushort value = BitConverter.ToUInt16(readBuffer2, 0);
+			Device.WriteRead(writeBuffer, readBuffer);
+			ushort value = BitConverter.ToUInt16(readBuffer, 0);
 
-			Debug.WriteLine($"GroveBaseHatRPI {analogPort} ReadRaw {value}");
+			Debug.WriteLine($"GroveBaseHatRPI ReadRaw {analogPort} MSB 0x{readBuffer[1]:X} LSB 0x{readBuffer[0]:X} Value {value}");
 
 			return value;
 		}
@@ -173,15 +158,15 @@ namespace devMobile.Windows10IoTCore.GroveBaseHatRPI
 		public double ReadVoltage(AnalogPort analogPort)
 		{
 			byte register = (byte)analogPort;
-			register += RegisterVoltageOffset;
+			register += RegisterVoltageBase;
 			byte[] writeBuffer = new byte[1] { register };
-			byte[] readBuffer2 = new byte[2] { 0, 0 };
+			byte[] readBuffer = new byte[2] { 0, 0 };
 			Debug.Assert(Device != null, "Initialise method not called");
 
-			Device.WriteRead(writeBuffer, readBuffer2);
-			ushort value = BitConverter.ToUInt16(readBuffer2, 0);
+			Device.WriteRead(writeBuffer, readBuffer);
+			ushort value = BitConverter.ToUInt16(readBuffer, 0);
 
-			Debug.WriteLine($"GroveBaseHatRPI {analogPort} ReadVoltage {value}");
+			Debug.WriteLine($"GroveBaseHatRPI ReadVoltage {analogPort} MSB 0x{readBuffer[1]:X} LSB 0x{readBuffer[0]:X} Value {value}");
 
 			return value / 1000.0 ;
 		}
@@ -189,7 +174,7 @@ namespace devMobile.Windows10IoTCore.GroveBaseHatRPI
 		public double Read(AnalogPort analogPort)
 		{
 			byte register = (byte)analogPort;
-			register += RegisterValueOffset;
+			register += RegisterValueBase;
 			byte[] writeBuffer = new byte[1] { register } ;
 			byte[] readBuffer = new byte[2] { 0, 0 };
 			Debug.Assert(Device != null, "Initialise method not called");
@@ -197,7 +182,7 @@ namespace devMobile.Windows10IoTCore.GroveBaseHatRPI
 			Device.WriteRead(writeBuffer, readBuffer);
 			ushort value = BitConverter.ToUInt16(readBuffer, 0);
 
-			Debug.WriteLine($"GroveBaseHatRPI {analogPort} Read {value}");
+			Debug.WriteLine($"GroveBaseHatRPI Read {analogPort} MSB 0x{readBuffer[1]:X} LSB 0x{readBuffer[0]:X} Value {value}");
 
 			return (double)value / 10.0;
 		}
