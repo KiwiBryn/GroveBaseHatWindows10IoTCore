@@ -22,8 +22,9 @@ THE SOFTWARE.
 */
 using System;
 using System.Diagnostics;
+using System.Threading;
+
 using Windows.ApplicationModel.Background;
-using Windows.System.Threading;
 
 using devMobile.Windows10IoTCore.GroveBaseHatRPI;
 
@@ -32,7 +33,9 @@ namespace devMobile.Windows10IoTCore.GroveBaseHatRPIClient
 {
 	public sealed class StartupTask : IBackgroundTask
 	{
-		private ThreadPoolTimer timer;
+		private Timer timerRaw;
+		private Timer timerVoltage;
+		private Timer timerRead;
 		private BackgroundTaskDeferral deferral;
 		AnalogPorts analogPorts = new AnalogPorts();
 
@@ -48,31 +51,31 @@ namespace devMobile.Windows10IoTCore.GroveBaseHatRPIClient
 			double powerSupplyVoltage = analogPorts.PowerSupplyVoltage();
 			Debug.WriteLine($"Power supply voltage {powerSupplyVoltage}v");
 
-			//timer = ThreadPoolTimer.CreatePeriodicTimer(AnalogPortsRaw, TimeSpan.FromSeconds(5));
-			//timer = ThreadPoolTimer.CreatePeriodicTimer(AnalogPortsVoltage, TimeSpan.FromSeconds(5));
-			//timer = ThreadPoolTimer.CreatePeriodicTimer(AnalogPortsRead, TimeSpan.FromSeconds(5));
+			//timerRaw = new Timer(AnalogPortsRaw, null, TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(15));
+			//timerVoltage = new Timer(AnalogPortsVoltage,null, TimeSpan.FromSeconds(6), TimeSpan.FromSeconds(15));
+			//timerRead = new Timer(AnalogPortsRead, null, TimeSpan.FromSeconds(9), TimeSpan.FromSeconds(15));
 		}
 
-		void AnalogPortsRaw(ThreadPoolTimer timer)
+		void AnalogPortsRaw(object state)
 		{
 			try
 			{
 				ushort value;
 
 				value = analogPorts.ReadRaw(AnalogPorts.AnalogPort.A0);
-				Debug.WriteLine($"A0 Raw {value}");
+				Debug.Write($"Raw - A0 {value} ");
 				value = analogPorts.ReadRaw(AnalogPorts.AnalogPort.A1);
-				Debug.WriteLine($"A1 Raw {value}");
+				Debug.Write($"A1 {value} ");
 				value = analogPorts.ReadRaw(AnalogPorts.AnalogPort.A2);
-				Debug.WriteLine($"A2 Raw {value}");
+				Debug.Write($"A2 {value} ");
 				value = analogPorts.ReadRaw(AnalogPorts.AnalogPort.A3);
-				Debug.WriteLine($"A3 Raw {value}");
+				Debug.Write($"A3 {value} ");
 				value = analogPorts.ReadRaw(AnalogPorts.AnalogPort.A4);
-				Debug.WriteLine($"A4 Raw {value}");
+				Debug.Write($"A4 {value} ");
 				value = analogPorts.ReadRaw(AnalogPorts.AnalogPort.A5);
-				Debug.WriteLine($"A5 Raw {value}");
+				Debug.Write($"A5 {value} ");
 				value = analogPorts.ReadRaw(AnalogPorts.AnalogPort.A6);
-				Debug.WriteLine($"A6 Raw {value}");
+				Debug.Write($"A6 {value} ");
 				value = analogPorts.ReadRaw(AnalogPorts.AnalogPort.A7);
 				Debug.WriteLine($"A7 Raw {value}");
 			}
@@ -82,26 +85,26 @@ namespace devMobile.Windows10IoTCore.GroveBaseHatRPIClient
 			}
 		}
 
-		void AnalogPortsVoltage(ThreadPoolTimer timer)
+		void AnalogPortsVoltage(object state)
 		{
 			try
 			{
 				double value;
 
 				value = analogPorts.ReadVoltage(AnalogPorts.AnalogPort.A0);
-				Debug.WriteLine($"A0 {value}v");
+				Debug.Write($"Voltage - A0 {value}v ");
 				value = analogPorts.ReadVoltage(AnalogPorts.AnalogPort.A1);
-				Debug.WriteLine($"A1 {value}v");
+				Debug.Write($"A1 {value}v ");
 				value = analogPorts.ReadVoltage(AnalogPorts.AnalogPort.A2);
-				Debug.WriteLine($"A2 {value}v");
+				Debug.Write($"A2 {value}v ");
 				value = analogPorts.ReadVoltage(AnalogPorts.AnalogPort.A3);
-				Debug.WriteLine($"A3 {value}v");
+				Debug.Write($"A3 {value}v ");
 				value = analogPorts.ReadVoltage(AnalogPorts.AnalogPort.A4);
-				Debug.WriteLine($"A4 {value}v");
+				Debug.Write($"A4 {value}v ");
 				value = analogPorts.ReadVoltage(AnalogPorts.AnalogPort.A5);
-				Debug.WriteLine($"A5 {value}v");
+				Debug.Write($"A5 {value}v ");
 				value = analogPorts.ReadVoltage(AnalogPorts.AnalogPort.A6);
-				Debug.WriteLine($"A6 {value}v");
+				Debug.Write($"A6 {value}v ");
 				value = analogPorts.ReadVoltage(AnalogPorts.AnalogPort.A7);
 				Debug.WriteLine($"A7 {value}v");
 			}
@@ -111,26 +114,26 @@ namespace devMobile.Windows10IoTCore.GroveBaseHatRPIClient
 			}
 		}
 
-		void AnalogPortsRead(ThreadPoolTimer timer)
+		void AnalogPortsRead(object state)
 		{
 			try
 			{
 				double value;
 
 				value = analogPorts.Read(AnalogPorts.AnalogPort.A0);
-				Debug.WriteLine($"A0 {value}");
+				Debug.Write($"Read - A0 {value} ");
 				value = analogPorts.Read(AnalogPorts.AnalogPort.A1);
-				Debug.WriteLine($"A1 {value}");
+				Debug.Write($"A1 {value} ");
 				value = analogPorts.Read(AnalogPorts.AnalogPort.A2);
-				Debug.WriteLine($"A2 {value}");
+				Debug.Write($"A2 {value} ");
 				value = analogPorts.Read(AnalogPorts.AnalogPort.A3);
-				Debug.WriteLine($"A3 {value}");
+				Debug.Write($"A3 {value} ");
 				value = analogPorts.Read(AnalogPorts.AnalogPort.A4);
-				Debug.WriteLine($"A4 {value}");
+				Debug.Write($"A4 {value} ");
 				value = analogPorts.Read(AnalogPorts.AnalogPort.A5);
-				Debug.WriteLine($"A5 {value}");
+				Debug.Write($"A5 {value} ");
 				value = analogPorts.Read(AnalogPorts.AnalogPort.A6);
-				Debug.WriteLine($"A6 {value}");
+				Debug.Write($"A6 {value} ");
 				value = analogPorts.Read(AnalogPorts.AnalogPort.A7);
 				Debug.WriteLine($"A7 {value}");
 			}
