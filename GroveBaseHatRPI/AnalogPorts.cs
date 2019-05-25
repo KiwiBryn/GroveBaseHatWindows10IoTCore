@@ -27,6 +27,14 @@ using Windows.Devices.I2c;
 
 namespace devMobile.Windows10IoTCore.GroveBaseHatRPI
 {
+#if (!GROVE_BASE_HAT_RPI && !GROVE_BASE_HAT_RPI_ZERO)
+#error Library must have one of at least one of GROVE_BASE_HAT_RPI or GROVE_BASE_HAT_RPI_ZERO defined
+#endif
+
+#if (GROVE_BASE_HAT_RPI && GROVE_BASE_HAT_RPI_ZERO)
+#error Library must have one of at most one of GROVE_BASE_HAT_RPI or GROVE_BASE_HAT_RPI_ZERO defined
+#endif
+
 	public class AnalogPorts : IDisposable
 	{
 		private const int I2CAddress = 0x04;
@@ -36,7 +44,12 @@ namespace devMobile.Windows10IoTCore.GroveBaseHatRPI
 		private const byte RegisterRawBase = 0x10;
 		private const byte RegisterVoltageBase = 0x20;
 		private const byte RegisterValueBase = 0x30;
+#if GROVE_BASE_HAT_RPI
 		private const byte DeviceId = 0x0004;
+#endif
+#if GROVE_BASE_HAT_RPI_ZERO
+		private const byte DeviceId = 0x0005;
+#endif
 		private I2cDevice Device= null;
 		private bool Disposed = false;
 
@@ -48,9 +61,10 @@ namespace devMobile.Windows10IoTCore.GroveBaseHatRPI
 			A3 = 3,
 			A4 = 4,
 			A5 = 5,
+#if GROVE_BASE_HAT_RPI
 			A6 = 6,
 			A7 = 7,
-			A8 = 8
+#endif
 		};
 
 		public void Dispose()

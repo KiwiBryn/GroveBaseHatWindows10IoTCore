@@ -37,7 +37,7 @@ namespace devMobile.Windows10IoTCore.GroveBaseHatRPIClient
 		private Timer timerVoltage;
 		private Timer timerRead;
 		private BackgroundTaskDeferral deferral;
-		AnalogPorts analogPorts = new AnalogPorts();
+		private AnalogPorts analogPorts = new AnalogPorts();
 
 		public void Run(IBackgroundTaskInstance taskInstance)
 		{
@@ -52,10 +52,10 @@ namespace devMobile.Windows10IoTCore.GroveBaseHatRPIClient
 			Debug.WriteLine($"Power supply voltage {powerSupplyVoltage}v");
 
 			//timerRaw = new Timer(AnalogPortsRaw, null, TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(15));
-			//timerVoltage = new Timer(AnalogPortsVoltage,null, TimeSpan.FromSeconds(6), TimeSpan.FromSeconds(15));
+			timerVoltage = new Timer(AnalogPortsVoltage,null, TimeSpan.FromSeconds(6), TimeSpan.FromSeconds(15));
 			//timerRead = new Timer(AnalogPortsRead, null, TimeSpan.FromSeconds(9), TimeSpan.FromSeconds(15));
 		}
-
+	
 		void AnalogPortsRaw(object state)
 		{
 			try
@@ -74,10 +74,12 @@ namespace devMobile.Windows10IoTCore.GroveBaseHatRPIClient
 				Debug.Write($"A4 {value} ");
 				value = analogPorts.ReadRaw(AnalogPorts.AnalogPort.A5);
 				Debug.Write($"A5 {value} ");
+#if GROVE_BASE_HAT_RPI
 				value = analogPorts.ReadRaw(AnalogPorts.AnalogPort.A6);
 				Debug.Write($"A6 {value} ");
 				value = analogPorts.ReadRaw(AnalogPorts.AnalogPort.A7);
 				Debug.WriteLine($"A7 Raw {value}");
+#endif
 			}
 			catch (Exception ex)
 			{
@@ -103,10 +105,12 @@ namespace devMobile.Windows10IoTCore.GroveBaseHatRPIClient
 				Debug.Write($"A4 {value}v ");
 				value = analogPorts.ReadVoltage(AnalogPorts.AnalogPort.A5);
 				Debug.Write($"A5 {value}v ");
+#if GROVE_BASE_HAT_RPI
 				value = analogPorts.ReadVoltage(AnalogPorts.AnalogPort.A6);
 				Debug.Write($"A6 {value}v ");
 				value = analogPorts.ReadVoltage(AnalogPorts.AnalogPort.A7);
 				Debug.WriteLine($"A7 {value}v");
+#endif
 			}
 			catch (Exception ex)
 			{
@@ -132,10 +136,12 @@ namespace devMobile.Windows10IoTCore.GroveBaseHatRPIClient
 				Debug.Write($"A4 {value} ");
 				value = analogPorts.Read(AnalogPorts.AnalogPort.A5);
 				Debug.Write($"A5 {value} ");
+#if GROVE_BASE_HAT_RPI
 				value = analogPorts.Read(AnalogPorts.AnalogPort.A6);
 				Debug.Write($"A6 {value} ");
 				value = analogPorts.Read(AnalogPorts.AnalogPort.A7);
 				Debug.WriteLine($"A7 {value}");
+#endif
 			}
 			catch (Exception ex)
 			{

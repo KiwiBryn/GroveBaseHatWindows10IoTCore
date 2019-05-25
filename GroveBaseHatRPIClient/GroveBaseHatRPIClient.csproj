@@ -129,8 +129,14 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Glovebox.IoT.Devices">
+      <Version>1.0.17</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.3</Version>
+    </PackageReference>
+    <PackageReference Include="UnitsNet">
+      <Version>3.34.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
