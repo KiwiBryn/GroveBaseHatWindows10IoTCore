@@ -28,11 +28,11 @@ using Windows.Devices.I2c;
 namespace devMobile.Windows10IoTCore.GroveBaseHatRPI
 {
 #if (!GROVE_BASE_HAT_RPI && !GROVE_BASE_HAT_RPI_ZERO)
-#error Library must have one of at least one of GROVE_BASE_HAT_RPI or GROVE_BASE_HAT_RPI_ZERO defined
+#error Library must have at least one of GROVE_BASE_HAT_RPI or GROVE_BASE_HAT_RPI_ZERO defined
 #endif
 
 #if (GROVE_BASE_HAT_RPI && GROVE_BASE_HAT_RPI_ZERO)
-#error Library must have one of at most one of GROVE_BASE_HAT_RPI or GROVE_BASE_HAT_RPI_ZERO defined
+#error Library must have at most one of GROVE_BASE_HAT_RPI or GROVE_BASE_HAT_RPI_ZERO defined
 #endif
 
 	public class AnalogPorts : IDisposable
